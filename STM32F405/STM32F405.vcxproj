@@ -41,8 +41,18 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|VisualGDB'">
     <ClCompile>
-      <CPPLanguageStandard>CPP14</CPPLanguageStandard>
+      <CPPLanguageStandard>GNUPP11</CPPLanguageStandard>
+      <AdditionalIncludeDirectories>;%(ClCompile.AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG=1 -std=c++11;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CLanguageStandard>C99</CLanguageStandard>
+      <AdditionalOptions>-std=c++11 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <Link>
+      <AdditionalLinkerInputs>;%(Link.AdditionalLinkerInputs)</AdditionalLinkerInputs>
+      <LibrarySearchDirectories>;%(Link.LibrarySearchDirectories)</LibrarySearchDirectories>
+      <AdditionalLibraryNames>;%(Link.AdditionalLibraryNames)</AdditionalLibraryNames>
+      <LinkerScript />
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|VisualGDB'">
     <ClCompile>
@@ -56,10 +66,8 @@
   </ImportGroup>
   <ItemGroup>
     <ClCompile Include="can.cpp" />
-    <ClCompile Include="delay.cpp" />
     <ClCompile Include="gpio.cpp" />
     <ClCompile Include="LEDBlink.cpp" />
-    <ClCompile Include="PID.cpp" />
     <ClCompile Include="system_stm32f4xx.c" />
     <ClCompile Include="tim.cpp" />
     <ClCompile Include="usart.cpp" />
@@ -72,6 +80,7 @@
     <ClInclude Include="motor.h" />
     <ClInclude Include="PID.h" />
     <ClInclude Include="RC.h" />
+    <ClInclude Include="sysclk.h" />
     <ClInclude Include="tim.h" />
     <ClInclude Include="usart.h" />
     <None Include="stm32.props" />

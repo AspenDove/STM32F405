@@ -27,7 +27,7 @@
 		<ToolchainSettingsContainer>
 			<ARMCPU>cortex-m4</ARMCPU>
 			<InstructionSet>THUMB</InstructionSet>
-			<FloatABI>soft</FloatABI>
+			<FloatABI>hard</FloatABI>
 		</ToolchainSettingsContainer>
 	</ItemDefinitionGroup>
 	<Target Name="ApplyASFLAGS">

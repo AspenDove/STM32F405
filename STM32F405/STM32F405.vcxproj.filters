@@ -522,13 +522,7 @@
     <ClCompile Include="can.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="delay.cpp">
-      <Filter>Source files</Filter>
-    </ClCompile>
     <ClCompile Include="gpio.cpp">
-      <Filter>Source files</Filter>
-    </ClCompile>
-    <ClCompile Include="PID.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="tim.cpp">
@@ -567,6 +561,9 @@
       <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="LED.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="sysclk.h">
       <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>

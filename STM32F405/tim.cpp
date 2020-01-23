@@ -6,8 +6,6 @@
 #include "RC.h"
 #include "LED.h"
 
-
-#define PI 3.1415926f
 TIM_HandleTypeDef *phtim[4];
 
 TIM& TIM::Init(const uint32_t Mode, TIM_TypeDef* TIM, const uint32_t frequency)
@@ -64,7 +62,7 @@ extern "C" void TIM4_IRQHandler(void)
 	if (phtim[3])HAL_TIM_IRQHandler(phtim[3]);
 }
 
-void TIM::BaseInit(void)
+void TIM::BaseInit(const std::function<void(void)> fun)
 {
 	TIM_ClockConfigTypeDef sClockSourceConfig;
 	TIM_MasterConfigTypeDef sMasterConfig;
@@ -76,6 +74,7 @@ void TIM::BaseInit(void)
 	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
 	HAL_TIMEx_MasterConfigSynchronization(&htim, &sMasterConfig);
 	HAL_TIM_Base_Start_IT(&htim);
+	Ontimer = fun;
 }
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
 {
@@ -90,65 +89,9 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
 
 extern "C" void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	static uint8_t can1_send[16];
-	static uint8_t can2_send[16];
-	HAL_StatusTypeDef status = HAL_OK;
-
-
 	if (tasks.counter++, tasks == htim)
 	{
-		rc.Update();
-		//ctrl.Update();
-		if (tasks.counter % 500 == 0)
-		{
-			/*
-			sprintf(info, "%.2lf %d %d\r\n",time,can1_motor[0].current,can1_motor[0].curspeed);
-			uart7.UARTTransmit((uint8_t*)(info), strlen(info));
-			float delta = 0.01f;
-			time += delta;
-			if(time <= 7 * 3)
-			{
-				can1_motor[0].current = currentsqe[(uint32_t)(time / 3.f)];
-			}
-			*/
-			/*i1 += (float)(int32_t)getword(can1_data[0][4], can1_data[0][5])*(float)(int32_t)getword(can1_data[0][2], can1_data[0][3]);
-			i2 += judgement.data.powerHeatData.chassisPower;
-			datapack data = {
-				i1,
-				i1/i2,
-				judgement.data.powerHeatData.chassisPower };
-			uart7.UARTTransmit((uint8_t*)(&data), sizeof(float) * 3);*/
-		}
-		if (tasks.counter % 4 == 0)
-		{
-			for (auto &motor : can1_motor)motor.Ontimer(can1.data, can1_send);
-			for (auto &motor : can2_motor)motor.Ontimer(can2.data, can2_send);
-		}
-		switch (tasks.counter % 4)
-		{
-		case 0:
-			status = can1.Transmit(0x200, can1_send + 0);
-			if (status == HAL_TIMEOUT)led2.on();
-			else led2.off();
-			break;
-		case 1:
-			status = can2.Transmit(0x200, can2_send + 0);
-			if (status == HAL_TIMEOUT)led1.on();
-			else led1.off();
-			break;
-		case 2:
-			status = can1.Transmit(0x1ff, can1_send + 8);
-			if (status == HAL_TIMEOUT)led2.on();
-			else led2.off();
-			break;
-		case 3:
-			status = can2.Transmit(0x1ff, can2_send + 8);
-			if (status == HAL_TIMEOUT)led1.on();
-			else led1.off();
-			break;
-		default:;
-		}
-
+		tasks.Ontimer();
 	}
 	else if (htim->Instance == TIM4)
 	{
